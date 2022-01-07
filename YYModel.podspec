@@ -15,7 +15,7 @@ Pod::Spec.new do |s|
   s.source       = { :git => 'https://github.com/ibireme/YYModel.git', :tag => s.version.to_s }
   
   s.requires_arc = true
-  s.source_files = 'YYModel/*.{h,m}'
+  s.source_files = 'YYModel/*.{h,m,swift}'
   s.public_header_files = 'YYModel/*.{h}'
   
   s.frameworks = 'Foundation', 'CoreFoundation'
