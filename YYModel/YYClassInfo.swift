@@ -155,7 +155,7 @@ public struct YYEncodingType: OptionSet {
  @param typeEncoding  A Type-Encoding string.
  @return The encoding type.
  */
-public func YYEncodingGetType(_ typeEncoding: String?) -> YYEncodingType {
+public func _YYEncodingGetType(_ typeEncoding: String?) -> YYEncodingType {
     guard var type = typeEncoding, !type.isEmpty else { return .unknown }
     
     var qualifier: YYEncodingType = .unknown
@@ -245,72 +245,119 @@ public func YYEncodingGetType(_ typeEncoding: String?) -> YYEncodingType {
     }
 }
 
-///**
-// Instance variable information.
-// */
-//open class YYClassIvarInfo : NSObject {
-//
-//    ///< ivar opaque struct
-//    open var ivar: Ivar { get }
-//
-//    ///< Ivar's name
-//    open var name: String { get }
-//
-//    ///< Ivar's offset
-//    open var offset: Int { get }
-//
-//    ///< Ivar's type encoding
-//    open var typeEncoding: String { get }
-//
-//    ///< Ivar's type
-//    open var type: YYEncodingType { get }
-//
-//
-//    /**
-//     Creates and returns an ivar info object.
-//
-//     @param ivar ivar opaque struct
-//     @return A new object, or nil if an error occurs.
-//     */
-//    public init(ivar: Ivar)
-//}
-//
-///**
-// Method information.
-// */
-//open class YYClassMethodInfo : NSObject {
-//
-//    ///< method opaque struct
-//    open var method: Method { get }
-//
-//    ///< method name
-//    open var name: String { get }
-//
-//    ///< method's selector
-//    open var sel: Selector { get }
-//
-//    ///< method's implementation
-//    open var imp: IMP { get }
-//
-//    ///< method's parameter and return types
-//    open var typeEncoding: String { get }
-//
-//    ///< return value's type
-//    open var returnTypeEncoding: String { get }
-//
-//    ///< array of arguments' type
-//    open var argumentTypeEncodings: [String]? { get }
-//
-//
-//    /**
-//     Creates and returns a method info object.
-//
-//     @param method method opaque struct
-//     @return A new object, or nil if an error occurs.
-//     */
-//    public init(method: Method)
-//}
-//
+/**
+ Instance variable information.
+ */
+public struct YYClassIvarInfo {
+    
+    ///< ivar opaque struct
+    public var ivar: Ivar
+    
+    ///< Ivar's name
+    public var name: String?
+    
+    ///< Ivar's offset
+    public var offset: Int
+    
+    ///< Ivar's type encoding
+    public var typeEncoding: String?
+    
+    ///< Ivar's type
+    public var type: YYEncodingType = .unknown
+    
+    
+    /**
+     Creates and returns an ivar info object.
+
+     @param ivar ivar opaque struct
+     @return A new object, or nil if an error occurs.
+     */
+    public init?(ivar: Ivar?) {
+        guard let ivar = ivar else { return nil }
+        
+        self.ivar = ivar
+        
+        if let name = ivar_getName(ivar) {
+            self.name = String(cString: name)
+        }
+        
+        self.offset = ivar_getOffset(ivar)
+        
+        if let typeEncoding = ivar_getTypeEncoding(ivar) {
+            self.typeEncoding = String(cString: typeEncoding)
+            self.type = _YYEncodingGetType(self.typeEncoding)
+        }
+    }
+}
+
+/**
+ Method information.
+ */
+public struct YYClassMethodInfo {
+    
+    ///< method opaque struct
+    public var method: Method
+    
+    ///< method name
+    public var name: String
+    
+    ///< method's selector
+    public var sel: Selector
+    
+    ///< method's implementation
+    public var imp: IMP
+    
+    ///< method's parameter and return types
+    public var typeEncoding: String?
+    
+    ///< return value's type
+    public var returnTypeEncoding: String
+    
+    ///< array of arguments' type
+    public var argumentTypeEncodings: [String]?
+    
+    
+    /**
+     Creates and returns a method info object.
+
+     @param method method opaque struct
+     @return A new object, or nil if an error occurs.
+     */
+    public init?(method: Method?) {
+        guard let method = method else { return nil }
+        
+        self.method = method
+        
+        self.sel = method_getName(method)
+        self.imp = method_getImplementation(method)
+        
+        let name = sel_getName(sel)
+        self.name = String(cString: name)
+
+        if let typeEncoding = method_getTypeEncoding(method) {
+            self.typeEncoding = String(cString: typeEncoding)
+        }
+        
+        let returnType = method_copyReturnType(method)
+        self.returnTypeEncoding = String(cString: returnType)
+        free(returnType)
+        
+        let argumentCount = method_getNumberOfArguments(method)
+        if argumentCount > 0 {
+            var argumentTypes = [String]()
+            for i in 0..<argumentCount {
+                let argumentType = method_copyArgumentType(method, i)
+                let type = argumentType != nil ? String(cString: argumentType!) : nil
+                argumentTypes.append(type ?? "")
+                if argumentType != nil {
+                    free(argumentType)
+                }
+            }
+            self.argumentTypeEncodings = argumentTypes
+        }
+    }
+}
+
 ///**
 // Property information.
 // */
