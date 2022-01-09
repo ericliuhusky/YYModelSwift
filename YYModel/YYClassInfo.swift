@@ -358,120 +358,315 @@ public struct YYClassMethodInfo {
     }
 }
 
-///**
-// Property information.
-// */
-//open class YYClassPropertyInfo : NSObject {
-//
-//    ///< property's opaque struct
-//    open var property: objc_property_t { get }
-//
-//    ///< property's name
-//    open var name: String { get }
-//
-//    ///< property's type
-//    open var type: YYEncodingType { get }
-//
-//    ///< property's encoding value
-//    open var typeEncoding: String { get }
-//
-//    ///< property's ivar name
-//    open var ivarName: String { get }
-//
-//    ///< may be nil
-//    open var cls: AnyClass? { get }
-//
-//    ///< may nil
-//    open var protocols: [String]? { get }
-//
-//    ///< getter (nonnull)
-//    open var getter: Selector { get }
-//
-//    ///< setter (nonnull)
-//    open var setter: Selector { get }
-//
-//
-//    /**
-//     Creates and returns a property info object.
-//
-//     @param property property opaque struct
-//     @return A new object, or nil if an error occurs.
-//     */
-//    public init(property: objc_property_t)
-//}
-//
-///**
-// Class information for a class.
-// */
-//open class YYClassInfo : NSObject {
-//
-//    ///< class object
-//    open var cls: AnyClass { get }
-//
-//    ///< super class object
-//    open var superCls: AnyClass? { get }
-//
-//    ///< class's meta class object
-//    open var metaCls: AnyClass? { get }
-//
-//    ///< whether this class is meta class
-//    open var isMeta: Bool { get }
-//
-//    ///< class name
-//    open var name: String { get }
-//
-//    ///< super class's class info
-//    open var `super`: YYClassInfo? { get }
-//
-//    ///< ivars
-//    open var ivarInfos: [String : YYClassIvarInfo]? { get }
-//
-//    ///< methods
-//    open var methodInfos: [String : YYClassMethodInfo]? { get }
-//
-//    ///< properties
-//    open var propertyInfos: [String : YYClassPropertyInfo]? { get }
-//
-//
-//    /**
-//     If the class is changed (for example: you add a method to this class with
-//     'class_addMethod()'), you should call this method to refresh the class info cache.
-//
-//     After called this method, `needUpdate` will returns `YES`, and you should call
-//     'classInfoWithClass' or 'classInfoWithClassName' to get the updated class info.
-//     */
-//    open func setNeedUpdate()
-//
-//
-//    /**
-//     If this method returns `YES`, you should stop using this instance and call
-//     `classInfoWithClass` or `classInfoWithClassName` to get the updated class info.
-//
-//     @return Whether this class info need update.
-//     */
-//    open func needUpdate() -> Bool
-//
-//
-//    /**
-//     Get the class info of a specified Class.
-//
-//     @discussion This method will cache the class info and super-class info
-//     at the first access to the Class. This method is thread-safe.
-//
-//     @param cls A class.
-//     @return A class info, or nil if an error occurs.
-//     */
-//    public convenience init?(with cls: AnyClass)
-//
-//
-//    /**
-//     Get the class info of a specified Class.
-//
-//     @discussion This method will cache the class info and super-class info
-//     at the first access to the Class. This method is thread-safe.
-//
-//     @param className A class name.
-//     @return A class info, or nil if an error occurs.
-//     */
-//    public convenience init?(className: String)
-//}
+/**
+ Property information.
+ */
+public struct YYClassPropertyInfo {
+    
+    ///< property's opaque struct
+    public var property: objc_property_t
+    
+    ///< property's name
+    public var name: String
+    
+    ///< property's type
+    public var type: YYEncodingType
+    
+    ///< property's encoding value
+    public var typeEncoding: String?
+    
+    ///< property's ivar name
+    public var ivarName: String?
+    
+    ///< may be nil
+    public var cls: AnyClass?
+    
+    ///< may nil
+    public var protocols: [String]?
+    
+    ///< getter (nonnull)
+    public var getter: Selector?
+    
+    ///< setter (nonnull)
+    public var setter: Selector?
+    
+    
+    /**
+     Creates and returns a property info object.
+
+     @param property property opaque struct
+     @return A new object, or nil if an error occurs.
+     */
+    public init?(property: objc_property_t?) {
+        guard let property = property else { return nil }
+        
+        self.property = property
+        
+        let name = property_getName(property)
+        self.name = String(cString: name)
+        
+        var type: YYEncodingType = .unknown
+        var attrCount: UInt32 = 0
+        let attrs = property_copyAttributeList(property, &attrCount)
+        for i in 0..<Int(attrCount) {
+            switch [Character](String(cString: attrs![i].name))[0] {
+            case "T": // Type encoding
+                if let value = attrs?[i].value {
+                    self.typeEncoding = String(cString: value)
+                    type = _YYEncodingGetType(typeEncoding)
+                    
+                    if type.intersection(.mask) == .object && !String(cString: value).isEmpty {
+                        let scanner = Scanner(string: typeEncoding!)
+                        if !scanner.scanString("@\"", into: nil) {
+                            continue
+                        }
+                        
+                        var clsName: NSString? = nil
+                        if scanner.scanUpToCharacters(from: .init(charactersIn: "\"<"), into: &clsName) {
+                            if let clsName = clsName as String?, !clsName.isEmpty {
+                                self.cls = objc_getClass(clsName) as? AnyClass
+                            }
+                        }
+                        
+                        var protocols = [String]()
+                        while scanner.scanString("<", into: nil) {
+                            var protoco: NSString? = nil
+                            if scanner.scanUpTo(">", into: &protoco) {
+                                if let protoco = protoco as String?, !protoco.isEmpty {
+                                    protocols.append(protoco)
+                                }
+                                scanner.scanString(">", into: nil)
+                            }
+                        }
+                        
+                        self.protocols = protocols
+                    }
+                }
+            case "V": // Instance variable
+                if let value = attrs?[i].value {
+                    self.ivarName = String(cString: value)
+                }
+            case "R":
+                type = type.union(.propertyReadonly)
+            case "C":
+                type = type.union(.propertyCopy)
+            case "&":
+                type = type.union(.propertyRetain)
+            case "N":
+                type = type.union(.propertyNonatomic)
+            case "D":
+                type = type.union(.propertyDynamic)
+            case "W":
+                type = type.union(.propertyWeak)
+            case "G":
+                type = type.union(.propertyCustomGetter)
+                if let value = attrs?[i].value {
+                    self.getter = Selector(String(cString: value))
+                }
+            case "S":
+                type = type.union(.propertyCustomSetter)
+                if let value = attrs?[i].value {
+                    self.setter = Selector(String(cString: value))
+                }
+            default:
+                break
+            }
+        }
+        
+        if attrs != nil {
+            free(attrs)
+        }
+        
+        self.type = type
+        
+        if !self.name.isEmpty {
+            if getter == nil {
+                getter = Selector(self.name)
+            }
+            if setter == nil {
+                setter = Selector("set\(self.name.first?.uppercased() ?? "")\(self.name.dropFirst())")
+            }
+        }
+    }
+}
+
+/**
+ Class information for a class.
+ */
+public class YYClassInfo {
+    
+    ///< class object
+    public var cls: AnyClass
+    
+    ///< super class object
+    public var superCls: AnyClass?
+    
+    ///< class's meta class object
+    public var metaCls: AnyClass?
+    
+    ///< whether this class is meta class
+    public var isMeta: Bool
+    
+    ///< class name
+    public var name: String
+    
+    ///< super class's class info
+    public var `super`: YYClassInfo?
+    
+    ///< ivars
+    public var ivarInfos: [String : YYClassIvarInfo]?
+    
+    ///< methods
+    public var methodInfos: [String : YYClassMethodInfo]?
+    
+    ///< properties
+    public var propertyInfos: [String : YYClassPropertyInfo]?
+    
+    
+    public init?(class cls: AnyClass?) {
+        guard let cls = cls else { return nil }
+        
+        self.cls = cls
+        self.superCls = class_getSuperclass(cls)
+        self.isMeta = class_isMetaClass(cls)
+        
+        if !isMeta {
+            self.metaCls = objc_getMetaClass(class_getName(cls)) as? AnyClass
+        }
+        
+        self.name = NSStringFromClass(cls)
+        
+        self.update()
+        
+        self.super = YYClassInfo.classInfo(with: superCls)
+    }
+    
+    func update() {
+        self.ivarInfos = nil
+        self.methodInfos = nil
+        self.propertyInfos = nil
+        
+        let cls = self.cls
+        var methodCount: UInt32 = 0
+        
+        if let methods = class_copyMethodList(cls, &methodCount) {
+            var methodInfos = [String: YYClassMethodInfo]()
+            for i in 0..<Int(methodCount) {
+                let info = YYClassMethodInfo(method: methods[i])
+                if let name = info?.name {
+                    methodInfos[name] = info
+                }
+            }
+            self.methodInfos = methodInfos
+            free(methods)
+        }
+        
+        var propertyCount: UInt32 = 0
+        if let properties = class_copyPropertyList(cls, &propertyCount) {
+            var propertyInfos = [String: YYClassPropertyInfo]()
+            for i in 0..<Int(propertyCount) {
+                let info = YYClassPropertyInfo(property: properties[i])
+                if let name = info?.name {
+                    propertyInfos[name] = info
+                }
+            }
+            self.propertyInfos = propertyInfos
+            free(properties)
+        }
+        
+        var ivarCount: UInt32 = 0
+        if let ivars = class_copyIvarList(cls, &ivarCount) {
+            var ivarInfos = [String: YYClassIvarInfo]()
+            for i in 0..<Int(ivarCount) {
+                let info = YYClassIvarInfo(ivar: ivars[i])
+                if let name = info?.name {
+                    ivarInfos[name] = info
+                }
+            }
+            self.ivarInfos = ivarInfos
+            free(ivars)
+        }
+        
+        if ivarInfos == nil {
+            self.ivarInfos = [:]
+        }
+        if methodInfos == nil {
+            self.methodInfos = [:]
+        }
+        if propertyInfos == nil {
+            self.propertyInfos = [:]
+        }
+        
+        self.needUpdate = false
+    }
+    
+    
+    /**
+     If the class is changed (for example: you add a method to this class with
+     'class_addMethod()'), you should call this method to refresh the class info cache.
+
+     After called this method, `needUpdate` will returns `YES`, and you should call
+     'classInfoWithClass' or 'classInfoWithClassName' to get the updated class info.
+     */
+    public func setNeedUpdate() {
+        self.needUpdate = true
+    }
+    
+    
+    /**
+     If this method returns `YES`, you should stop using this instance and call
+     `classInfoWithClass` or `classInfoWithClassName` to get the updated class info.
+
+     @return Whether this class info need update.
+     */
+    public var needUpdate: Bool = false
+    
+    static var classCache: [String: YYClassInfo] = [:]
+    static var metaCache: [String: YYClassInfo] = [:]
+    
+    /**
+     Get the class info of a specified Class.
+
+     @discussion This method will cache the class info and super-class info
+     at the first access to the Class. This method is thread-safe.
+
+     @param cls A class.
+     @return A class info, or nil if an error occurs.
+     */
+    public static func classInfo(with cls: AnyClass?) -> YYClassInfo? {
+        guard let cls = cls else { return nil }
+        
+        var info = class_isMetaClass(cls) ? Self.metaCache[NSStringFromClass(cls)] : Self.classCache[NSStringFromClass(cls)]
+        
+        if let info = info, info.needUpdate {
+            info.update()
+        }
+        
+        if info == nil {
+            info = YYClassInfo(class: cls)
+            if let info = info {
+                if info.isMeta {
+                    Self.metaCache[NSStringFromClass(cls)] = info
+                } else {
+                    Self.classCache[NSStringFromClass(cls)] = info
+                }
+            }
+        }
+        
+        return info
+    }
+    
+    
+    /**
+     Get the class info of a specified Class.
+
+     @discussion This method will cache the class info and super-class info
+     at the first access to the Class. This method is thread-safe.
+
+     @param className A class name.
+     @return A class info, or nil if an error occurs.
+     */
+    public static func classInfo(className: String) -> YYClassInfo? {
+        classInfo(with: NSClassFromString(className))
+    }
+}
