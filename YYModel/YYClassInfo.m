@@ -11,6 +11,7 @@
 
 #import "YYClassInfo.h"
 #import <objc/runtime.h>
+#import <YYModel/YYModel-Swift.h>
 
 YYEncodingType YYEncodingGetType(const char *typeEncoding) {
     char *type = (char *)typeEncoding;
@@ -89,64 +90,6 @@ YYEncodingType YYEncodingGetType(const char *typeEncoding) {
         default: return YYEncodingTypeUnknown | qualifier;
     }
 }
-
-@implementation YYClassIvarInfo
-
-- (instancetype)initWithIvar:(Ivar)ivar {
-    if (!ivar) return nil;
-    self = [super init];
-    _ivar = ivar;
-    const char *name = ivar_getName(ivar);
-    if (name) {
-        _name = [NSString stringWithUTF8String:name];
-    }
-    _offset = ivar_getOffset(ivar);
-    const char *typeEncoding = ivar_getTypeEncoding(ivar);
-    if (typeEncoding) {
-        _typeEncoding = [NSString stringWithUTF8String:typeEncoding];
-        _type = YYEncodingGetType(typeEncoding);
-    }
-    return self;
-}
-
-@end
-
-@implementation YYClassMethodInfo
-
-- (instancetype)initWithMethod:(Method)method {
-    if (!method) return nil;
-    self = [super init];
-    _method = method;
-    _sel = method_getName(method);
-    _imp = method_getImplementation(method);
-    const char *name = sel_getName(_sel);
-    if (name) {
-        _name = [NSString stringWithUTF8String:name];
-    }
-    const char *typeEncoding = method_getTypeEncoding(method);
-    if (typeEncoding) {
-        _typeEncoding = [NSString stringWithUTF8String:typeEncoding];
-    }
-    char *returnType = method_copyReturnType(method);
-    if (returnType) {
-        _returnTypeEncoding = [NSString stringWithUTF8String:returnType];
-        free(returnType);
-    }
-    unsigned int argumentCount = method_getNumberOfArguments(method);
-    if (argumentCount > 0) {
-        NSMutableArray *argumentTypes = [NSMutableArray new];
-        for (unsigned int i = 0; i < argumentCount; i++) {
-            char *argumentType = method_copyArgumentType(method, i);
-            NSString *type = argumentType ? [NSString stringWithUTF8String:argumentType] : nil;
-            [argumentTypes addObject:type ? type : @""];
-            if (argumentType) free(argumentType);
-        }
-        _argumentTypeEncodings = argumentTypes;
-    }
-    return self;
-}
-
-@end
 
 @implementation YYClassPropertyInfo
 

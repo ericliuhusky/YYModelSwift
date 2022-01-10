@@ -684,7 +684,7 @@ extension YYEncodingType {
 }
 
 @objcMembers
-class YYClassIvarInfo: NSObject {
+public class YYClassIvarInfo: NSObject {
     public var ivar: Ivar {
         classIvarInfo.ivar
     }
@@ -710,7 +710,7 @@ class YYClassIvarInfo: NSObject {
 }
 
 @objcMembers
-class YYClassMethodInfo: NSObject {
+public class YYClassMethodInfo: NSObject {
     public var method: Method {
         classMethodInfo.method
     }
