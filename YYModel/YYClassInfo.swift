@@ -11,7 +11,7 @@ import ObjectiveC.runtime
 /**
  Type encoding's type.
  */
-public struct YYEncodingType: OptionSet {
+public struct EncodingType: OptionSet {
     public let rawValue: UInt
     
     public init(rawValue: UInt) {
@@ -20,129 +20,129 @@ public struct YYEncodingType: OptionSet {
     
     
     ///< mask of type value
-    public static let mask: YYEncodingType = .init(rawValue: 0xFF)
+    public static let mask: EncodingType = .init(rawValue: 0xFF)
     
     ///< unknown
-    public static let unknown: YYEncodingType = .init(rawValue: 0)
+    public static let unknown: EncodingType = .init(rawValue: 0)
     
     ///< void
-    public static let void: YYEncodingType = .init(rawValue: 1)
+    public static let void: EncodingType = .init(rawValue: 1)
     
     ///< bool
-    public static let bool: YYEncodingType = .init(rawValue: 2)
+    public static let bool: EncodingType = .init(rawValue: 2)
     
     ///< char / BOOL
-    public static let int8: YYEncodingType = .init(rawValue: 3)
+    public static let int8: EncodingType = .init(rawValue: 3)
     
     ///< unsigned char
-    public static let uInt8: YYEncodingType = .init(rawValue: 4)
+    public static let uInt8: EncodingType = .init(rawValue: 4)
     
     ///< short
-    public static let int16: YYEncodingType = .init(rawValue: 5)
+    public static let int16: EncodingType = .init(rawValue: 5)
     
     ///< unsigned short
-    public static let uInt16: YYEncodingType = .init(rawValue: 6)
+    public static let uInt16: EncodingType = .init(rawValue: 6)
     
     ///< int
-    public static let int32: YYEncodingType = .init(rawValue: 7)
+    public static let int32: EncodingType = .init(rawValue: 7)
     
     ///< unsigned int
-    public static let uInt32: YYEncodingType = .init(rawValue: 8)
+    public static let uInt32: EncodingType = .init(rawValue: 8)
     
     ///< long long
-    public static let int64: YYEncodingType = .init(rawValue: 9)
+    public static let int64: EncodingType = .init(rawValue: 9)
     
     ///< unsigned long long
-    public static let uInt64: YYEncodingType = .init(rawValue: 10)
+    public static let uInt64: EncodingType = .init(rawValue: 10)
     
     ///< float
-    public static let float: YYEncodingType = .init(rawValue: 11)
+    public static let float: EncodingType = .init(rawValue: 11)
     
     ///< double
-    public static let double: YYEncodingType = .init(rawValue: 12)
+    public static let double: EncodingType = .init(rawValue: 12)
     
     ///< long double
-    public static let longDouble: YYEncodingType = .init(rawValue: 13)
+    public static let longDouble: EncodingType = .init(rawValue: 13)
     
     ///< id
-    public static let object: YYEncodingType = .init(rawValue: 14)
+    public static let object: EncodingType = .init(rawValue: 14)
     
     ///< Class
-    public static let `class`: YYEncodingType = .init(rawValue: 15)
+    public static let `class`: EncodingType = .init(rawValue: 15)
     
     ///< SEL
-    public static let SEL: YYEncodingType = .init(rawValue: 16)
+    public static let SEL: EncodingType = .init(rawValue: 16)
     
     ///< block
-    public static let block: YYEncodingType = .init(rawValue: 17)
+    public static let block: EncodingType = .init(rawValue: 17)
     
     ///< void*
-    public static let pointer: YYEncodingType = .init(rawValue: 18)
+    public static let pointer: EncodingType = .init(rawValue: 18)
     
     ///< struct
-    public static let `struct`: YYEncodingType = .init(rawValue: 19)
+    public static let `struct`: EncodingType = .init(rawValue: 19)
     
     ///< union
-    public static let union: YYEncodingType = .init(rawValue: 20)
+    public static let union: EncodingType = .init(rawValue: 20)
     
     ///< char*
-    public static let cString: YYEncodingType = .init(rawValue: 21)
+    public static let cString: EncodingType = .init(rawValue: 21)
     
     ///< char[10] (for example)
-    public static let cArray: YYEncodingType = .init(rawValue: 22)
+    public static let cArray: EncodingType = .init(rawValue: 22)
     
     
     ///< mask of qualifier
-    public static let qualifierMask: YYEncodingType = .init(rawValue: 0xFF00)
+    public static let qualifierMask: EncodingType = .init(rawValue: 0xFF00)
     
     ///< const
-    public static let qualifierConst: YYEncodingType = .init(rawValue: 1 << 8)
+    public static let qualifierConst: EncodingType = .init(rawValue: 1 << 8)
     
     ///< in
-    public static let qualifierIn: YYEncodingType = .init(rawValue: 1 << 9)
+    public static let qualifierIn: EncodingType = .init(rawValue: 1 << 9)
     
     ///< inout
-    public static let qualifierInout: YYEncodingType = .init(rawValue: 1 << 10)
+    public static let qualifierInout: EncodingType = .init(rawValue: 1 << 10)
     
     ///< out
-    public static let qualifierOut: YYEncodingType = .init(rawValue: 1 << 11)
+    public static let qualifierOut: EncodingType = .init(rawValue: 1 << 11)
     
     ///< bycopy
-    public static let qualifierBycopy: YYEncodingType = .init(rawValue: 1 << 12)
+    public static let qualifierBycopy: EncodingType = .init(rawValue: 1 << 12)
     
     ///< byref
-    public static let qualifierByref: YYEncodingType = .init(rawValue: 1 << 13)
+    public static let qualifierByref: EncodingType = .init(rawValue: 1 << 13)
     
     ///< oneway
-    public static let qualifierOneway: YYEncodingType = .init(rawValue: 1 << 14)
+    public static let qualifierOneway: EncodingType = .init(rawValue: 1 << 14)
     
     
     ///< mask of property
-    public static let propertyMask: YYEncodingType = .init(rawValue: 0xFF0000)
+    public static let propertyMask: EncodingType = .init(rawValue: 0xFF0000)
     
     ///< readonly
-    public static let propertyReadonly: YYEncodingType = .init(rawValue: 1 << 16)
+    public static let propertyReadonly: EncodingType = .init(rawValue: 1 << 16)
     
     ///< copy
-    public static let propertyCopy: YYEncodingType = .init(rawValue: 1 << 17)
+    public static let propertyCopy: EncodingType = .init(rawValue: 1 << 17)
     
     ///< retain
-    public static let propertyRetain: YYEncodingType = .init(rawValue: 1 << 18)
+    public static let propertyRetain: EncodingType = .init(rawValue: 1 << 18)
     
     ///< nonatomic
-    public static let propertyNonatomic: YYEncodingType = .init(rawValue: 1 << 19)
+    public static let propertyNonatomic: EncodingType = .init(rawValue: 1 << 19)
     
     ///< weak
-    public static let propertyWeak: YYEncodingType = .init(rawValue: 1 << 20)
+    public static let propertyWeak: EncodingType = .init(rawValue: 1 << 20)
     
     ///< getter=
-    public static let propertyCustomGetter: YYEncodingType = .init(rawValue: 1 << 21)
+    public static let propertyCustomGetter: EncodingType = .init(rawValue: 1 << 21)
     
     ///< setter=
-    public static let propertyCustomSetter: YYEncodingType = .init(rawValue: 1 << 22)
+    public static let propertyCustomSetter: EncodingType = .init(rawValue: 1 << 22)
     
     ///< @dynamic
-    public static let propertyDynamic: YYEncodingType = .init(rawValue: 1 << 23)
+    public static let propertyDynamic: EncodingType = .init(rawValue: 1 << 23)
 }
 
 /**
@@ -155,10 +155,10 @@ public struct YYEncodingType: OptionSet {
  @param typeEncoding  A Type-Encoding string.
  @return The encoding type.
  */
-public func _YYEncodingGetType(_ typeEncoding: String?) -> YYEncodingType {
+public func _YYEncodingGetType(_ typeEncoding: String?) -> EncodingType {
     guard var type = typeEncoding, !type.isEmpty else { return .unknown }
     
-    var qualifier: YYEncodingType = .unknown
+    var qualifier: EncodingType = .unknown
     
     var i = 0
     for c in type {
@@ -248,7 +248,7 @@ public func _YYEncodingGetType(_ typeEncoding: String?) -> YYEncodingType {
 /**
  Instance variable information.
  */
-public struct YYClassIvarInfo {
+public struct ClassIvarInfo {
     
     ///< ivar opaque struct
     public var ivar: Ivar
@@ -263,7 +263,7 @@ public struct YYClassIvarInfo {
     public var typeEncoding: String?
     
     ///< Ivar's type
-    public var type: YYEncodingType = .unknown
+    public var type: EncodingType = .unknown
     
     
     /**
@@ -293,7 +293,7 @@ public struct YYClassIvarInfo {
 /**
  Method information.
  */
-public struct YYClassMethodInfo {
+public struct ClassMethodInfo {
     
     ///< method opaque struct
     public var method: Method
@@ -361,7 +361,7 @@ public struct YYClassMethodInfo {
 /**
  Property information.
  */
-public struct YYClassPropertyInfo {
+public struct ClassPropertyInfo {
     
     ///< property's opaque struct
     public var property: objc_property_t
@@ -370,7 +370,7 @@ public struct YYClassPropertyInfo {
     public var name: String
     
     ///< property's type
-    public var type: YYEncodingType
+    public var type: EncodingType
     
     ///< property's encoding value
     public var typeEncoding: String?
@@ -405,7 +405,7 @@ public struct YYClassPropertyInfo {
         let name = property_getName(property)
         self.name = String(cString: name)
         
-        var type: YYEncodingType = .unknown
+        var type: EncodingType = .unknown
         var attrCount: UInt32 = 0
         let attrs = property_copyAttributeList(property, &attrCount)
         for i in 0..<Int(attrCount) {
@@ -514,13 +514,13 @@ public class YYClassInfo {
     public var `super`: YYClassInfo?
     
     ///< ivars
-    public var ivarInfos: [String : YYClassIvarInfo]?
+    public var ivarInfos: [String : ClassIvarInfo]?
     
     ///< methods
-    public var methodInfos: [String : YYClassMethodInfo]?
+    public var methodInfos: [String : ClassMethodInfo]?
     
     ///< properties
-    public var propertyInfos: [String : YYClassPropertyInfo]?
+    public var propertyInfos: [String : ClassPropertyInfo]?
     
     
     public init?(class cls: AnyClass?) {
@@ -550,9 +550,9 @@ public class YYClassInfo {
         var methodCount: UInt32 = 0
         
         if let methods = class_copyMethodList(cls, &methodCount) {
-            var methodInfos = [String: YYClassMethodInfo]()
+            var methodInfos = [String: ClassMethodInfo]()
             for i in 0..<Int(methodCount) {
-                let info = YYClassMethodInfo(method: methods[i])
+                let info = ClassMethodInfo(method: methods[i])
                 if let name = info?.name {
                     methodInfos[name] = info
                 }
@@ -563,9 +563,9 @@ public class YYClassInfo {
         
         var propertyCount: UInt32 = 0
         if let properties = class_copyPropertyList(cls, &propertyCount) {
-            var propertyInfos = [String: YYClassPropertyInfo]()
+            var propertyInfos = [String: ClassPropertyInfo]()
             for i in 0..<Int(propertyCount) {
-                let info = YYClassPropertyInfo(property: properties[i])
+                let info = ClassPropertyInfo(property: properties[i])
                 if let name = info?.name {
                     propertyInfos[name] = info
                 }
@@ -576,9 +576,9 @@ public class YYClassInfo {
         
         var ivarCount: UInt32 = 0
         if let ivars = class_copyIvarList(cls, &ivarCount) {
-            var ivarInfos = [String: YYClassIvarInfo]()
+            var ivarInfos = [String: ClassIvarInfo]()
             for i in 0..<Int(ivarCount) {
-                let info = YYClassIvarInfo(ivar: ivars[i])
+                let info = ClassIvarInfo(ivar: ivars[i])
                 if let name = info?.name {
                     ivarInfos[name] = info
                 }
@@ -668,5 +668,113 @@ public class YYClassInfo {
      */
     public static func classInfo(className: String) -> YYClassInfo? {
         classInfo(with: NSClassFromString(className))
+    }
+}
+
+// MARK: - objc
+
+extension YYEncodingType {
+    init(_ encodingType: EncodingType) {
+        self.init(rawValue: encodingType.rawValue)
+    }
+    
+    var encodingType: EncodingType {
+        EncodingType(rawValue: rawValue)
+    }
+}
+
+@objcMembers
+class YYClassIvarInfo: NSObject {
+    public var ivar: Ivar {
+        classIvarInfo.ivar
+    }
+    public var name: String? {
+        classIvarInfo.name
+    }
+    public var offset: Int {
+        classIvarInfo.offset
+    }
+    public var typeEncoding: String? {
+        classIvarInfo.typeEncoding
+    }
+    public var type: YYEncodingType {
+        YYEncodingType(rawValue: classIvarInfo.type.rawValue)
+    }
+    
+    var classIvarInfo: ClassIvarInfo
+    
+    public init?(ivar: Ivar?) {
+        guard let ivar = ivar else { return nil }
+        self.classIvarInfo = ClassIvarInfo(ivar: ivar)!
+    }
+}
+
+@objcMembers
+class YYClassMethodInfo: NSObject {
+    public var method: Method {
+        classMethodInfo.method
+    }
+    public var name: String {
+        classMethodInfo.name
+    }
+    public var sel: Selector {
+        classMethodInfo.sel
+    }
+    public var imp: IMP {
+        classMethodInfo.imp
+    }
+    public var typeEncoding: String? {
+        classMethodInfo.typeEncoding
+    }
+    public var returnTypeEncoding: String {
+        classMethodInfo.returnTypeEncoding
+    }
+    public var argumentTypeEncodings: [String]? {
+        classMethodInfo.argumentTypeEncodings
+    }
+    
+    var classMethodInfo: ClassMethodInfo
+    
+    public init?(method: Method?) {
+        guard let method = method else { return nil }
+        self.classMethodInfo = ClassMethodInfo(method: method)!
+    }
+}
+
+@objcMembers
+class YYClassPropertyInfo: NSObject {
+    public var property: objc_property_t {
+        classPropertyInfo.property
+    }
+    public var name: String {
+        classPropertyInfo.name
+    }
+    public var type: YYEncodingType {
+        YYEncodingType(rawValue: classPropertyInfo.type.rawValue)
+    }
+    public var typeEncoding: String? {
+        classPropertyInfo.typeEncoding
+    }
+    public var ivarName: String? {
+        classPropertyInfo.ivarName
+    }
+    public var cls: AnyClass? {
+        classPropertyInfo.cls
+    }
+    public var protocols: [String]? {
+        classPropertyInfo.protocols
+    }
+    public var getter: Selector? {
+        classPropertyInfo.getter
+    }
+    public var setter: Selector? {
+        classPropertyInfo.setter
+    }
+    
+    var classPropertyInfo: ClassPropertyInfo
+    
+    public init?(property: objc_property_t?) {
+        guard let property = property else { return nil }
+        self.classPropertyInfo = ClassPropertyInfo(property: property)!
     }
 }
