@@ -63,17 +63,6 @@ typedef NS_OPTIONS(NSUInteger, YYEncodingType) {
     YYEncodingTypePropertyDynamic      = 1 << 23, ///< @dynamic
 };
 
-/**
- Get the type from a Type-Encoding string.
- 
- @discussion See also:
- https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtTypeEncodings.html
- https://developer.apple.com/library/mac/documentation/Cocoa/Conceptual/ObjCRuntimeGuide/Articles/ocrtPropertyIntrospection.html
- 
- @param typeEncoding  A Type-Encoding string.
- @return The encoding type.
- */
-YYEncodingType YYEncodingGetType(const char *typeEncoding);
 
 @class YYClassIvarInfo;
 
