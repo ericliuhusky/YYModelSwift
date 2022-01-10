@@ -155,7 +155,7 @@ public struct EncodingType: OptionSet {
  @param typeEncoding  A Type-Encoding string.
  @return The encoding type.
  */
-public func _YYEncodingGetType(_ typeEncoding: String?) -> EncodingType {
+public func EncodingGetType(_ typeEncoding: String?) -> EncodingType {
     guard var type = typeEncoding, !type.isEmpty else { return .unknown }
     
     var qualifier: EncodingType = .unknown
@@ -285,7 +285,7 @@ public struct ClassIvarInfo {
         
         if let typeEncoding = ivar_getTypeEncoding(ivar) {
             self.typeEncoding = String(cString: typeEncoding)
-            self.type = _YYEncodingGetType(self.typeEncoding)
+            self.type = EncodingGetType(self.typeEncoding)
         }
     }
 }
@@ -413,7 +413,7 @@ public struct ClassPropertyInfo {
             case "T": // Type encoding
                 if let value = attrs?[i].value {
                     self.typeEncoding = String(cString: value)
-                    type = _YYEncodingGetType(typeEncoding)
+                    type = EncodingGetType(typeEncoding)
                     
                     if type.intersection(.mask) == .object && !String(cString: value).isEmpty {
                         let scanner = Scanner(string: typeEncoding!)
@@ -680,6 +680,13 @@ extension YYEncodingType {
     
     var encodingType: EncodingType {
         EncodingType(rawValue: rawValue)
+    }
+}
+
+@objcMembers
+public class YYClassInfoGlobal: NSObject {
+    public static func YYEncodingGetType(_ typeEncoding: UnsafePointer<CChar>?) -> YYEncodingType {
+        YYEncodingType(rawValue: EncodingGetType(String(cString: typeEncoding!)).rawValue)
     }
 }
 
