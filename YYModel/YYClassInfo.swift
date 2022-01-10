@@ -161,7 +161,7 @@ public func EncodingGetType(_ typeEncoding: String?) -> EncodingType {
     var qualifier: EncodingType = .unknown
     
     var i = 0
-    for c in type {
+qualloop: for c in type {
         switch c {
         case "r":
             qualifier = qualifier.union(.qualifierConst)
@@ -178,7 +178,7 @@ public func EncodingGetType(_ typeEncoding: String?) -> EncodingType {
         case "V":
             qualifier = qualifier.union(.qualifierOneway)
         default:
-            break
+            break qualloop
         }
         
         i += 1
@@ -189,7 +189,7 @@ public func EncodingGetType(_ typeEncoding: String?) -> EncodingType {
     guard !type.isEmpty else { return qualifier }
     
     
-    switch type {
+    switch type.first! {
     case "v":
         return qualifier.union(.void)
     case "B":
