@@ -9,7 +9,7 @@
 //  LICENSE file in the root directory of this source tree.
 //
 
-#import "YYClassInfo.h"
+#import <YYModel/YYClassInfo.h>
 #import <objc/runtime.h>
 #import <YYModel/YYModel-Swift.h>
 

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3473A46F278D215000E2DAFD /* YYClassInfo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3473A46E278D215000E2DAFD /* YYClassInfo.swift */; };
 		D927FA881F36EB6C007B972E /* YYModel.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D927FA7E1F36EB6C007B972E /* YYModel.framework */; };
 		D930C3B51F36EDC4005A2D00 /* NSObject+YYModel.h in Headers */ = {isa = PBXBuildFile; fileRef = D930C3B01F36EDC4005A2D00 /* NSObject+YYModel.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		D930C3B61F36EDC4005A2D00 /* NSObject+YYModel.m in Sources */ = {isa = PBXBuildFile; fileRef = D930C3B11F36EDC4005A2D00 /* NSObject+YYModel.m */; };
@@ -39,6 +40,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		3473A46E278D215000E2DAFD /* YYClassInfo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = YYClassInfo.swift; sourceTree = "<group>"; };
 		D927FA7E1F36EB6C007B972E /* YYModel.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = YYModel.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		D927FA821F36EB6C007B972E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = Info.plist; path = ../Framework/Info.plist; sourceTree = "<group>"; };
 		D927FA871F36EB6C007B972E /* YYModelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = YYModelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -102,6 +104,7 @@
 		D930C3AF1F36EDC4005A2D00 /* YYModel */ = {
 			isa = PBXGroup;
 			children = (
+				3473A46E278D215000E2DAFD /* YYClassInfo.swift */,
 				D930C3B41F36EDC4005A2D00 /* YYModel.h */,
 				D930C3B01F36EDC4005A2D00 /* NSObject+YYModel.h */,
 				D930C3B11F36EDC4005A2D00 /* NSObject+YYModel.m */,
@@ -197,6 +200,7 @@
 				TargetAttributes = {
 					D927FA7D1F36EB6C007B972E = {
 						CreatedOnToolsVersion = 9.0;
+						LastSwiftMigration = 1310;
 					};
 					D927FA861F36EB6C007B972E = {
 						CreatedOnToolsVersion = 9.0;
@@ -244,6 +248,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D930C3B91F36EDC4005A2D00 /* YYClassInfo.m in Sources */,
+				3473A46F278D215000E2DAFD /* YYClassInfo.swift in Sources */,
 				D930C3B61F36EDC4005A2D00 /* NSObject+YYModel.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -391,6 +396,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -403,6 +409,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ibireme.YYModel;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -411,6 +419,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "";
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -423,6 +432,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ibireme.YYModel;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -430,6 +440,7 @@
 		D927FA961F36EB6C007B972E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				GCC_GENERATE_TEST_COVERAGE_FILES = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/../YYModelTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -442,6 +453,7 @@
 		D927FA971F36EB6C007B972E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				GCC_GENERATE_TEST_COVERAGE_FILES = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/../YYModelTests/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

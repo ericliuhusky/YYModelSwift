@@ -80,6 +80,9 @@ typedef union yy_union{ char a; int b;} yy_union;
 
 
 
+YYEncodingType YYEncodingGetType(const char *typeEncoding) {
+    return [YYClassInfoGlobal YYEncodingGetType:typeEncoding];
+}
 
 
 
